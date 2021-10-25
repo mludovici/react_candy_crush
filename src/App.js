@@ -1,87 +1,83 @@
 import { useState, useEffect, useCallback } from 'react'
-import StarTrek1 from './images/Star Trek/1.png'
-import StarTrek2 from './images/Star Trek/2.jpg'
-import StarTrek3 from './images/Star Trek/3.jpg'
-import StarTrek4 from './images/Star Trek/4.png'
-import StarTrek5 from './images/Star Trek/5.png'
-import StarTrek6 from './images/Star Trek/6.png'
-import StarTrek7 from './images/Star Trek/7.png'
-import StarTrek8 from './images/Star Trek/8.png'
+import Candy1 from './images/Candy/candy1.png'
+import Candy2 from './images/Candy/candy2.png'
+import Candy3 from './images/Candy/candy3.png'
+import Candy4 from './images/Candy/candy4.png'
+import Candy5 from './images/Candy/candy5.png'
+import Candy6 from './images/Candy/candy6.png'
 import BlankSquare from './images/Star Trek/ex1.png'
 
 const width = 8
-const candyColors = [
-	StarTrek1,
-	StarTrek2,
-	StarTrek3,
-	StarTrek4,
-	StarTrek5,
-	StarTrek6,
-]
+
+const candyimages = [Candy1, Candy2, Candy3, Candy4, Candy5, Candy6]
+let starTrekImages = []
+let starWarsImages = []
 
 const App = () => {
-	//const [universe, setUniverse] = useState('Star Trek')
-
+	const [swColors, setSWColors] = useState(null)
+	const [stColors, setSTColors] = useState(null)
+	const [candyColors, setCandyColors] = useState([])
 	const [currentColorArrangement, setCurrentColorArrangement] = useState([])
 	const [squareBeingDragged, setSquareBeingDragged] = useState(null)
 	const [squareBeingReplaced, setSquareBeingReplaced] = useState(null)
 	const [scoreDisplay, setScoreDisplay] = useState(0)
-	// // useEffect(() => {
-	// // 	if (window) {
-	// // 		let answer = window.prompt(
-	// // 			"Do you prefer Star Trek or Star Wars? (Type in 'Star Wars' or 'Star Trek')"
-	// // 		)
-	// // 		if (answer === 'Star Trek') {
-	// // 			setUniverse(answer)
-	// // 		} else if (answer === 'Star Wars') {
-	// // 			setUniverse(answer)
-	// // 		} else {
-	// // 			setUniverse('Star Wars')
-	// // 		}
-	// // 	}
-	// // }, [universe, setUniverse])
 
-	// function importAll(r, universe) {
-	// 	let images = {}
-	// 	console.log(r)
-	// 	console.log({ r })
-	// 	console.log('Keys:', r.keys())
+	function importAll(r) {
+		let images = {}
+		let AllImages = r.keys()
 
-	// 	return r
-	// 		.keys()
-	// 		.filter((item) => item.includes(universe))
-	// 		.map(
-	// 			(item, index) =>
-	// 				(images[item.replace('./', '')] = r(item).default)
-	// 		)
-	// }
+		let candyImages = AllImages.filter((item) => item.includes('Candy'))
+		starWarsImages = AllImages.filter((item) => item.includes('Star Wars'))
+		starTrekImages = AllImages.filter((item) => item.includes('Star Trek'))
 
-	// const images = importAll(
-	// 	require.context('./images', true, /\.(png|jpe?g|svg)$/),
-	// 	universe
-	// )
+		let cc = candyImages.map(
+			(item) => (images[item.replace('./', '')] = r(item).default)
+		)
+		let st = starWarsImages.map(
+			(item) => (images[item.replace('./', '')] = r(item).default)
+		)
+		let sw = starTrekImages.map(
+			(item) => (images[item.replace('./', '')] = r(item).default)
+		)
 
-	// useEffect(() => {
-	// 	function importAll(r, universe) {
-	// 		let images = {}
-	// 		console.log(r)
-	// 		console.log({ r })
-	// 		console.log('Keys:', r.keys())
+		let stImagesTotalSix = []
+		while (stImagesTotalSix.length < 6) {
+			let rndImageNumber = Math.floor(Math.random() * st.length)
+			let rndImage = st[rndImageNumber]
+			if (!stImagesTotalSix.includes(rndImage)) {
+				stImagesTotalSix.push(rndImage)
+			} else {
+				continue
+			}
+		}
 
-	// 		return r
-	// 			.keys()
-	// 			.filter((item) => item.includes(universe))
-	// 			.map(
-	// 				(item, index) =>
-	// 					(images[item.replace('./', '')] = r(item).default)
-	// 			)
-	// 	}
-	// 	const images = importAll(
-	// 		require.context('./images', true, /\.(png|jpe?g|svg)$/),
-	// 		universe
-	// 	)
-	// 	console.log({ images })
-	// }, [])
+		let swImagesTotalSix = []
+		while (swImagesTotalSix.length < 6) {
+			let rndImageNumber = Math.floor(Math.random() * sw.length)
+			let rndImage = sw[rndImageNumber]
+			if (!swImagesTotalSix.includes(rndImage)) {
+				swImagesTotalSix.push(rndImage)
+			} else {
+				continue
+			}
+		}
+
+		//console.log({ cc, stImagesTotalSix, swImagesTotalSix })
+		// r.keys().map((item) => (images[item.replace('./', '')] = r(item)))
+		// let img2 = { ...images }
+		// console.log(img2)
+		return [cc, stImagesTotalSix, swImagesTotalSix]
+	}
+
+	useEffect(() => {
+		const [candyImages, SWImages, STImages] = importAll(
+			require.context('./images', true, /\.(png|jpe?g|svg)$/)
+		)
+		//console.log({ candyImages, SWImages, STImages })
+		setCandyColors(candyImages)
+		setSWColors(SWImages)
+		setSTColors(STImages)
+	}, [])
 
 	const checkForColumnOfThree = useCallback(() => {
 		for (let i = 0; i <= 47; i++) {
@@ -201,20 +197,20 @@ const App = () => {
 				currentColorArrangement[i] = BlankSquare
 			}
 		}
-	}, [currentColorArrangement])
+	}, [currentColorArrangement, candyColors])
 
 	const dragStart = (e) => {
-		console.log('drag start', e.target)
+		//console.log('drag start', e.target)
 		setSquareBeingDragged(e.target)
 	}
 
 	const dragDrop = (e) => {
-		console.log('drag drop', e.target)
+		//console.log('drag drop', e.target)
 		setSquareBeingReplaced(e.target)
 	}
 
 	const dragEnd = (e) => {
-		console.log('drag end', e.target)
+		//console.log('drag end', e.target)
 		const squareBeingDraggedId = parseInt(
 			squareBeingDragged.getAttribute('data-id')
 		)
@@ -224,7 +220,7 @@ const App = () => {
 			squareBeingReplaced.getAttribute('data-id')
 		)
 
-		console.log({ squareBeingDraggedId, squareBeingReplacedId })
+		//console.log({ squareBeingDraggedId, squareBeingReplacedId })
 		const validMoves = [
 			squareBeingDraggedId - 1,
 			squareBeingDraggedId - width,
@@ -250,11 +246,11 @@ const App = () => {
 			squareBeingReplacedId &&
 			(isColumnOfFour || isRowOfFour || isColumnOfThree || isRowOfThree)
 		) {
-			console.log('inside validMove')
+			//console.log('inside validMove')
 			setSquareBeingDragged(null)
 			setSquareBeingReplaced(null)
 		} else {
-			console.log('inside INvalidMove')
+			//console.log('inside INvalidMove')
 			setScoreDisplay((score) => score - 5)
 
 			// currentColorArrangement[squareBeingReplacedId] =
@@ -263,21 +259,20 @@ const App = () => {
 			// 	squareBeingDragged.getAttribute('src')
 		}
 
-		console.log({ scoreDisplay })
+		//console.log({ scoreDisplay })
 	}
 
 	const createBoard = useCallback(() => {
 		const randomColorArrangement = []
+		//console.log({ candyColors })
 
 		for (let i = 0; i < width * width; i++) {
-			const randomNumberFrom0To5 = Math.floor(
-				candyColors.length * Math.random()
-			)
-			const randomColor = candyColors[randomNumberFrom0To5]
+			const randomNumber = Math.floor(candyColors.length * Math.random())
+			const randomColor = candyColors[randomNumber]
 			randomColorArrangement.push(randomColor)
 		}
 		setCurrentColorArrangement(randomColorArrangement)
-	}, [])
+	}, [candyColors])
 
 	useEffect(() => {
 		createBoard()
@@ -291,7 +286,7 @@ const App = () => {
 			checkForRowOfThree()
 			moveIntoSquareBelow()
 			setCurrentColorArrangement([...currentColorArrangement])
-		}, 100)
+		}, 200)
 		return () => clearInterval(timer)
 	}, [
 		checkForColumnOfFour,
@@ -300,26 +295,73 @@ const App = () => {
 		checkForRowOfThree,
 		moveIntoSquareBelow,
 		currentColorArrangement,
+		setCandyColors,
 	])
 
+	const handleChoice = (e, choice) => {
+		//console.log({ choice })
+		if (choice === 'Candy') {
+			setCandyColors(candyimages)
+		} else if (choice === 'Star Wars') {
+			//console.log({ swColors })
+			setCandyColors(swColors)
+		} else if (choice === 'Star Trek') {
+			setCandyColors(stColors)
+		}
+		//console.log('CandyColors after handleChoice: ', { candyColors })
+		//createBoard()
+	}
+
 	return (
-		<div className='app'>
-			<div className='game'>
-				{currentColorArrangement.map((candyColor, index) => (
+		<div>
+			<div className='buttonRow'>
+				<button onClick={(e) => handleChoice(e, 'Star Trek')}>
 					<img
-						src={candyColor}
-						key={index}
-						alt={candyColor}
-						data-id={index}
-						draggable={true}
-						onDragStart={dragStart}
-						onDragOver={(e) => e.preventDefault()}
-						onDragEnter={(e) => e.preventDefault()}
-						onDragLeave={(e) => e.preventDefault()}
-						onDrop={dragDrop}
-						onDragEnd={dragEnd}
+						src='https://img.icons8.com/wired/64/000000/star-trek-symbol.png'
+						alt='Star Trek'
 					/>
-				))}
+				</button>
+				<button onClick={(e) => handleChoice(e, 'Star Wars')}>
+					<img
+						src='https://img.icons8.com/ios/50/000000/stormtrooper.png'
+						alt='Star Wars'
+					/>{' '}
+				</button>
+				<button onClick={(e) => handleChoice(e, 'Candy')}>
+					<img
+						src='https://img.icons8.com/color/48/000000/sweets.png'
+						alt='Candy'
+					/>
+				</button>
+			</div>
+			<div
+				style={{
+					paddingLeft: '30px',
+					paddingTop: '20px',
+					fontSize: '20px',
+					fontWeight: 'bold',
+				}}
+			>
+				Score: {scoreDisplay}
+			</div>
+			<div className='app'>
+				<div className='game'>
+					{currentColorArrangement.map((candyColor, index) => (
+						<img
+							src={candyColor}
+							key={index}
+							alt={candyColor}
+							data-id={index}
+							draggable={true}
+							onDragStart={dragStart}
+							onDragOver={(e) => e.preventDefault()}
+							onDragEnter={(e) => e.preventDefault()}
+							onDragLeave={(e) => e.preventDefault()}
+							onDrop={dragDrop}
+							onDragEnd={dragEnd}
+						/>
+					))}
+				</div>
 			</div>
 		</div>
 	)
