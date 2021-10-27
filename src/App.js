@@ -22,7 +22,6 @@ const App = () => {
 	const [squareBeingDragged, setSquareBeingDragged] = useState(null)
 	const [squareBeingReplaced, setSquareBeingReplaced] = useState(null)
 	const [scoreDisplay, setScoreDisplay] = useState(0)
-	const [isInitial, setIsInitial] = useState(true)
 
 	function importAll(r) {
 		let images = {}
@@ -64,10 +63,6 @@ const App = () => {
 			}
 		}
 
-		//console.log({ cc, stImagesTotalSix, swImagesTotalSix })
-		// r.keys().map((item) => (images[item.replace('./', '')] = r(item)))
-		// let img2 = { ...images }
-		// console.log(img2)
 		return [cc, stImagesTotalSix, swImagesTotalSix]
 	}
 
@@ -75,7 +70,6 @@ const App = () => {
 		const [candyImages, SWImages, STImages] = importAll(
 			require.context('./images', true, /\.(png|jpe?g|svg)$/)
 		)
-		//console.log({ candyImages, SWImages, STImages })
 		setCandyColors(candyImages)
 		setSWColors(SWImages)
 		setSTColors(STImages)
@@ -202,17 +196,14 @@ const App = () => {
 	}, [currentColorArrangement, candyColors])
 
 	const dragStart = (e) => {
-		//console.log('drag start', e.target)
 		setSquareBeingDragged(e.target)
 	}
 
 	const dragDrop = (e) => {
-		//console.log('drag drop', e.target)
 		setSquareBeingReplaced(e.target)
 	}
 
 	const dragEnd = (e) => {
-		//console.log('drag end', e.target)
 		const squareBeingDraggedId = parseInt(
 			squareBeingDragged.getAttribute('data-id')
 		)
@@ -222,7 +213,6 @@ const App = () => {
 			squareBeingReplaced.getAttribute('data-id')
 		)
 
-		//console.log({ squareBeingDraggedId, squareBeingReplacedId })
 		const validMoves = [
 			squareBeingDraggedId - 1,
 			squareBeingDraggedId - width,
@@ -248,25 +238,15 @@ const App = () => {
 			squareBeingReplacedId &&
 			(isColumnOfFour || isRowOfFour || isColumnOfThree || isRowOfThree)
 		) {
-			//console.log('inside validMove')
 			setSquareBeingDragged(null)
 			setSquareBeingReplaced(null)
 		} else {
-			//console.log('inside INvalidMove')
 			setScoreDisplay((score) => score - 1)
-
-			// currentColorArrangement[squareBeingReplacedId] =
-			// 	squareBeingReplaced.getAttribute('src')
-			// currentColorArrangement[squareBeingDraggedId] =
-			// 	squareBeingDragged.getAttribute('src')
 		}
-
-		//console.log({ scoreDisplay })
 	}
 
 	const createBoard = useCallback(() => {
 		const randomColorArrangement = []
-		//console.log({ candyColors })
 
 		for (let i = 0; i < width * width; i++) {
 			const randomNumber = Math.floor(candyColors.length * Math.random())
@@ -315,8 +295,6 @@ const App = () => {
 		} else if (choice === 'Star Trek') {
 			setCandyColors(stColors)
 		}
-		//console.log('CandyColors after handleChoice: ', { candyColors })
-		//createBoard()
 	}
 
 	return (
@@ -349,7 +327,7 @@ const App = () => {
 					fontWeight: 'bold',
 				}}
 			>
-				Score: <ScoreBoard score={isInitial ? '0' : scoreDisplay} />
+				Score: <ScoreBoard score={scoreDisplay} />
 			</div>
 			<div className='app'>
 				<div className='game'>
