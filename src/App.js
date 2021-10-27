@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import ScoreBoard from './components/ScoreBoard'
 import Candy1 from './images/Candy/candy1.png'
 import Candy2 from './images/Candy/candy2.png'
 import Candy3 from './images/Candy/candy3.png'
@@ -21,6 +22,7 @@ const App = () => {
 	const [squareBeingDragged, setSquareBeingDragged] = useState(null)
 	const [squareBeingReplaced, setSquareBeingReplaced] = useState(null)
 	const [scoreDisplay, setScoreDisplay] = useState(0)
+	const [isInitial, setIsInitial] = useState(true)
 
 	function importAll(r) {
 		let images = {}
@@ -251,7 +253,7 @@ const App = () => {
 			setSquareBeingReplaced(null)
 		} else {
 			//console.log('inside INvalidMove')
-			setScoreDisplay((score) => score - 5)
+			setScoreDisplay((score) => score - 1)
 
 			// currentColorArrangement[squareBeingReplacedId] =
 			// 	squareBeingReplaced.getAttribute('src')
@@ -276,6 +278,10 @@ const App = () => {
 
 	useEffect(() => {
 		createBoard()
+		let timer = setTimeout(() => {
+			setScoreDisplay(0)
+		}, 1000)
+		return () => clearTimeout(timer)
 	}, [createBoard])
 
 	useEffect(() => {
@@ -287,6 +293,7 @@ const App = () => {
 			moveIntoSquareBelow()
 			setCurrentColorArrangement([...currentColorArrangement])
 		}, 200)
+
 		return () => clearInterval(timer)
 	}, [
 		checkForColumnOfFour,
@@ -342,7 +349,7 @@ const App = () => {
 					fontWeight: 'bold',
 				}}
 			>
-				Score: {scoreDisplay}
+				Score: <ScoreBoard score={isInitial ? '0' : scoreDisplay} />
 			</div>
 			<div className='app'>
 				<div className='game'>
