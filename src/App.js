@@ -22,6 +22,7 @@ const App = () => {
 	const [squareBeingDragged, setSquareBeingDragged] = useState(null)
 	const [squareBeingReplaced, setSquareBeingReplaced] = useState(null)
 	const [scoreDisplay, setScoreDisplay] = useState(0)
+	const [isInitial, setIsInitial] = useState(true)
 
 	function importAll(r) {
 		let images = {}
@@ -88,7 +89,7 @@ const App = () => {
 						!isBlank
 				)
 			) {
-				setScoreDisplay((score) => score + 3)
+				!isInitial && setScoreDisplay((score) => score + 3)
 
 				columnOfThree.forEach(
 					(square) => (currentColorArrangement[square] = BlankSquare)
@@ -110,7 +111,7 @@ const App = () => {
 						!isBlank
 				)
 			) {
-				setScoreDisplay((score) => score + 4)
+				!isInitial && setScoreDisplay((score) => score + 4)
 				columnOfFour.forEach(
 					(square) => (currentColorArrangement[square] = BlankSquare)
 				)
@@ -137,7 +138,7 @@ const App = () => {
 						!isBlank
 				)
 			) {
-				setScoreDisplay((score) => score + 3)
+				!isInitial && setScoreDisplay((score) => score + 3)
 
 				rowOfThree.forEach(
 					(square) => (currentColorArrangement[square] = BlankSquare)
@@ -166,7 +167,7 @@ const App = () => {
 						!isBlank
 				)
 			) {
-				setScoreDisplay((score) => score + 4)
+				!isInitial && setScoreDisplay((score) => score + 4)
 
 				rowOfFour.forEach(
 					(square) => (currentColorArrangement[square] = BlankSquare)
@@ -204,6 +205,7 @@ const App = () => {
 	}
 
 	const dragEnd = (e) => {
+		setIsInitial(false)
 		const squareBeingDraggedId = parseInt(
 			squareBeingDragged.getAttribute('data-id')
 		)
@@ -258,10 +260,10 @@ const App = () => {
 
 	useEffect(() => {
 		createBoard()
-		let timer = setTimeout(() => {
-			setScoreDisplay(0)
-		}, 1000)
-		return () => clearTimeout(timer)
+		// let timer = setTimeout(() => {
+		// 	setScoreDisplay(0)
+		// }, 1000)
+		//return () => clearTimeout(timer)
 	}, [createBoard])
 
 	useEffect(() => {
@@ -273,7 +275,6 @@ const App = () => {
 			moveIntoSquareBelow()
 			setCurrentColorArrangement([...currentColorArrangement])
 		}, 200)
-
 		return () => clearInterval(timer)
 	}, [
 		checkForColumnOfFour,
@@ -283,10 +284,12 @@ const App = () => {
 		moveIntoSquareBelow,
 		currentColorArrangement,
 		setCandyColors,
+		isInitial,
 	])
 
 	const handleChoice = (e, choice) => {
-		//console.log({ choice })
+		setIsInitial(true)
+		setScoreDisplay(0)
 		if (choice === 'Candy') {
 			setCandyColors(candyimages)
 		} else if (choice === 'Star Wars') {
